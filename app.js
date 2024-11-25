@@ -19,15 +19,37 @@ app.use((req, res, next) => {
 });
 
 app.get("/places", async (req, res) => {
-    const fileContent = await fs.readFile("./data/places.json");
-    const placesData = JSON.parse(fileContent);
-    res.status(200).json({ places: placesData });
+    // const fileContent = await fs.readFile("./data/places.json");
+    // const placesData = JSON.parse(fileContent);
+    // res.status(200).json({ places: placesData });
+    try {
+        console.log("Reading file: ./data/places.json");
+        const fileContent = await fs.readFile("./data/places.json", "utf-8");
+        console.log("File content:", fileContent);
+
+        const placesData = JSON.parse(fileContent || "[]"); // Default to empty array if file is empty
+        res.status(200).json({ places: placesData });
+    } catch (error) {
+        console.error("Error reading places.json:", error);
+        res.status(500).json({ message: "Failed to fetch places." });
+    }
 });
 
 app.get("/user-places", async (req, res) => {
-    const fileContent = await fs.readFile("./data/user-places.json");
-    const places = JSON.parse(fileContent);
-    res.status(200).json({ places });
+    // const fileContent = await fs.readFile("./data/user-places.json");
+    // const places = JSON.parse(fileContent);
+    // res.status(200).json({ places });
+    try {
+        const fileContent = await fs.readFile(
+            "./data/user-places.json",
+            "utf-8"
+        );
+        const places = JSON.parse(fileContent || "[]");
+        res.status(200).json({ places });
+    } catch (error) {
+        console.error("Error reading user-places.json:", error);
+        res.status(500).json({ message: "Failed to fetch user places." });
+    }
 });
 
 app.put("/user-places", async (req, res) => {
